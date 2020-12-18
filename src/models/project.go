@@ -41,8 +41,8 @@ type Project struct {
 	LastDeploy          string    `orm:"column(last_deploy);type(text);null"`
 	Audit               int16     `orm:"column(audit);null"`
 	KeepVersionNum      int       `orm:"column(keep_version_num)"`
-	CreatedAt           time.Time `orm:"column(created_at);type(datetime);null"`
-	UpdatedAt           time.Time `orm:"column(updated_at);type(datetime);null"`
+	CreatedAt           time.Time `orm:"column(created_at);type(datetime);auto_now_add"`
+	UpdatedAt           time.Time `orm:"column(updated_at);type(datetime);auto_now"`
 	ShowHistory         int16     `orm:"column(view_history)"` //显示较前次上线的代码变更
 	P2p                 int16     `orm:"column(p2p)"`
 	HostGroup           string    `orm:"column(host_group)"` //服务器分组，基于jumpserver groupid,groupid
