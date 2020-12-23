@@ -9,14 +9,22 @@
           <el-row>
             <el-col :span="20">
               <el-form label-width="100px">
-                <div class="panel-title">
-                  预发布
-                  <div class="fr">
 
-                  </div>
-                </div>
                 <div class="panel-body">
-                  <el-form-item label="项目名称:" label-width="100px">
+                  <el-form-item style="font-weight:bold" label="发布环境:" label-width="100px">
+                    <el-select v-model="env_id" filterable @change="select_env" placeholder="请选择" style="width: 200px;">
+                      <el-option
+                        v-for="item in envs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        <span style="float: left">{{ item.label }}</span>
+                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.lockstatus }}</span>
+                      </el-option>
+                    </el-select>
+                    
+                  </el-form-item>
+                  <el-form-item style="font-weight:bold" label="项目名称:" label-width="100px">
                     <el-select v-model="pro_id" filterable @change="select_project" placeholder="请选择" style="width: 400px;">
                       <el-option
                         v-for="item in options"
@@ -27,8 +35,12 @@
                         <span style="float: right; color: #8492a6; font-size: 13px">{{ item.lockstatus }}</span>
                       </el-option>
                     </el-select>
+                    <el-button @click.stop="on_refresh" size="small">
+                      <i class="fa fa-refresh"></i>
+                    </el-button>
                     
                   </el-form-item>
+
                 </div>
                 <el-form-item>
                   <el-button type="primary" @click="on_submit_form" :loading="on_submit_loading" :disabled="btn_submit_disable">创建
@@ -58,21 +70,38 @@
         projects: null,
         options: [],
         pro_id: null,
+        env_id: null,
         load_data: false,
         on_submit_loading: false,
         btn_submit_disable: true,
         btn_add_lock_disable: true,
-        btn_free_lock_disable: true
+        btn_free_lock_disable: true,
+        user_role: store.state.user_info.user.Role,
+        envs: []
       }
     },
     created() {
-      this.get_project_data()
+      // this.get_project_data()
+      if (this.user_role == 1 || this.user_role == 20) {
+        this.envs = [
+          {value: 1, label: "测试环境"},
+          {value: 2, label: "预发布环境"},
+          {value: 3, label: "生产环境"}
+        ]
+      }else{
+        this.envs = [{value: 2, label: "预发布环境"}]
+      }
+
     },
     methods: {
       //获取数据
       get_project_data() {
         this.load_data = true
-        this.$http.get(port_conf.mylist)
+        this.$http.get(port_conf.mylist, {
+          params: {
+            env_id: this.env_id
+          }
+        })
           .then(({data: {data}}) => {
             var opData = []
             var uid = store.state.user_info.user.Id
@@ -89,8 +118,12 @@
               }
 
 
-              
-                env = "测试环境"
+              var env
+                if(this.user_role == 1 || this.user_role == 20){
+                   env = this.envs[this.env_id-1].label
+                } else{
+                  env = this.envs[0].label
+                }
                 var lable = env + "-" + data.table_data[i].name
                 opData.push({label: lable, value: value, lockstatus:lockstatus})
               
@@ -185,6 +218,13 @@
             }
           }
         }
+      },
+      select_env() {
+        this.pro_id = null
+        this.get_project_data()
+      },
+      on_refresh(){
+        this.get_project_data()
       },
       //提交
       on_submit_form() {

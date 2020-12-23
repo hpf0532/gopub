@@ -85,7 +85,7 @@
                         </el-button>
                       <el-button type="warning" size="small" icon="share" @click="create_rollback_this(props.row.id)"
                                  v-if="props.row.status=='上线完成'&&props.row.action=='0'&&props.row.enable_rollback=='1' ">
-                        回滚到当前
+                        回滚当前
                       </el-button>
                         <el-button type="danger" size="small" icon="delete" v-if="props.row.status=='新建提交' || props.row.status=='上线失败'"
                                    @click="delete_data(props.row.id)">删除

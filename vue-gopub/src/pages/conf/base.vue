@@ -41,7 +41,7 @@
                         label="环境"
                         width="150">
                     <template scope="props">
-                        <span v-text="props.row.level == 3 ? '线上环境' : '预发布环境'"></span>
+                        <span v-text="props.row.level_name"></span>
                     </template>
                 </el-table-column>
                 <el-table-column
