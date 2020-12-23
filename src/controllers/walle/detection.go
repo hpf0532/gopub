@@ -22,7 +22,7 @@ func (c *DetectionController) Get() {
 	s.SetProject(c.Project)
 	s.SetTask(&models.Task{Id: -1})
 	codeBaseDir := s.GetDeployFromDir()
-	//1:本地文件权限加成
+	//1:本地文件权限检查
 	if _, err := os.Stat(codeBaseDir); err != nil {
 		if os.IsNotExist(err) {
 			os.MkdirAll(codeBaseDir, os.ModePerm)

@@ -11,6 +11,7 @@ type MyListController struct {
 }
 
 func (c *MyListController) Get() {
+	env_id, _ := c.GetInt("env_id", 0)
 	page, _ := c.GetInt("page", 0)
 	start := 0
 	length, _ := c.GetInt("length", 200000)
@@ -19,8 +20,11 @@ func (c *MyListController) Get() {
 	}
 	selectInfo := c.GetString("select_info")
 	where := ""
+	if env_id != 0 && (c.User.Role == 1 || c.User.Role == 20) {
+		where = " and `level` = " + common.GetString(env_id) + " "
+	}
 	if selectInfo != "" {
-		where = "  and(`name` LIKE '%" + selectInfo + "%' )"
+		where = where + " ) and(`name` LIKE '%" + selectInfo + "%' )"
 	}
 	var projects []orm.Params
 	o := orm.NewOrm()
