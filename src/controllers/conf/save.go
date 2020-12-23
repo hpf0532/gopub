@@ -24,6 +24,10 @@ func (c *SaveController) Post() {
 	if project.Id != 0 {
 		err = models.UpdateProjectById(&project)
 	} else {
+		// 加入配置创建人
+		if c.User != nil || c.User.Id != 0 {
+			project.UserId = uint(c.User.Id)
+		}
 		_, err = models.AddProject(&project)
 	}
 	if err != nil {

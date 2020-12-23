@@ -3,6 +3,7 @@ package confcontrollers
 import (
 	"github.com/linclin/gopub/src/controllers"
 	"github.com/linclin/gopub/src/models"
+	"time"
 )
 
 type CopyController struct {
@@ -19,7 +20,10 @@ func (c *CopyController) Get() {
 		return
 	}
 	c.Project.Name = c.Project.Name + " - copy"
+	// 复制等价于新增，修改ID和时间为默认值
 	c.Project.Id = 0
+	c.Project.CreatedAt = time.Time{}
+	c.Project.UpdatedAt = time.Time{}
 	c.Project.UserId = uint(c.User.Id)
 	_, err := models.AddProject(c.Project)
 	if err != nil {

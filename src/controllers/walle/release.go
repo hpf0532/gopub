@@ -43,6 +43,17 @@ func (c *ReleaseController) Get() {
 		c.SetJson(1, nil, "此项目正在上线中")
 		return
 	}
+	//项目发布加锁
+	if c.Project.UserLock > 0 {
+		c.SetJson(1, nil, "此项目已被锁定")
+		return
+	}
+	c.Project.UserLock = int(c.User.Id)
+	err := models.UpdateProjectById(c.Project)
+	if err != nil {
+		c.SetJson(1, nil, err.Error())
+		return
+	}
 	//删除上线日志记录
 	o := orm.NewOrm()
 	o.Raw("DELETE FROM `record` WHERE `task_id`= ? ", c.Task.Id).Exec()
@@ -57,9 +68,17 @@ func (c *ReleaseController) Get() {
 					TaskId:  c.Task.Id,
 				})
 			}
+			c.Project.UserLock = 0
+			models.UpdateProjectById(c.Project)
+
 		}()
 	} else {
-		go c.rollBackHandling()
+		go func() {
+			c.rollBackHandling()
+			c.Project.UserLock = 0
+			models.UpdateProjectById(c.Project)
+		}()
+
 	}
 	c.SetJson(0, nil, "")
 	return

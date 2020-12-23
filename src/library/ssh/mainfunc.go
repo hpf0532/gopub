@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/cucued/sshexec"
+	"github.com/hpf0532/sshexec"
 	"github.com/linclin/gopub/src/library/p2p/init_sever"
 	"github.com/linclin/gopub/src/library/p2p/server"
 	"os/exec"

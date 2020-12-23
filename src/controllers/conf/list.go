@@ -2,6 +2,7 @@ package confcontrollers
 
 import (
 	"github.com/astaxie/beego/orm"
+	taskcontrollers "github.com/hpf0532/gopub/src/controllers/task"
 	"github.com/linclin/gopub/src/controllers"
 	"github.com/linclin/gopub/src/library/common"
 )
@@ -26,6 +27,9 @@ func (c *ListController) Get() {
 	o := orm.NewOrm()
 
 	o.Raw("SELECT *, (SELECT realname FROM `user` WHERE `user`.id=project.user_id LIMIT 1) as realname FROM `project`  WHERE 1=1 "+where+" ORDER BY id LIMIT ?,?", start, length).Values(&projects)
+	for _, item := range projects {
+		item["level_name"] = taskcontrollers.GetProjectLevel(common.GetInt(item["level"]))
+	}
 	var count []orm.Params
 	total := 0
 	o.Raw("SELECT count(id) FROM `project` WHERE 1=1 " + where).Values(&count)

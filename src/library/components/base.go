@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/cucued/sshexec"
+	"github.com/hpf0532/sshexec"
 	"github.com/linclin/gopub/src/library/common"
 	"github.com/linclin/gopub/src/library/jumpserver"
 	"github.com/linclin/gopub/src/library/ssh"
@@ -222,7 +222,7 @@ func (c *BaseComponents) GetHosts_database() []HostInfo {
 			}
 		}
 	}
-	//格式化端口号
+	//格式化分组
 	reg2 := regexp.MustCompile(`(\d+)\#(\d+)\.(\d+)\.(\d+)\.(\d+)`)
 	hosts2 := reg2.FindAll([]byte(hostsStr), -1)
 	for _, host := range hosts2 {
@@ -281,7 +281,7 @@ func (c *BaseComponents) getEnv() string {
 		return "test"
 	}
 	if c.project.Level == 2 {
-		return "simu"
+		return "pre"
 	}
 	if c.project.Level == 3 {
 		return "prod"

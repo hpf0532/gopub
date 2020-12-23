@@ -129,6 +129,7 @@ func main() {
 		//	return nil
 		//})
 		//toolbox.AddTask("check_p2p_angent_status", check_p2p_angent_status)
+		beego.BConfig.WebConfig.StaticDir["/static"] = "static"
 		defer toolbox.StopTask()
 	}
 
